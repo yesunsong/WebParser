@@ -1,3 +1,4 @@
+import search.XDownsSearch;
 import site.XclientWebParser;
 
 public class Main {
@@ -6,8 +7,11 @@ public class Main {
 //		BuddhaWebParser parser = new BuddhaWebParser();
 //		parser.start();
 		
-		XclientWebParser parser = new XclientWebParser();
-		parser.start();
+//		XclientWebParser parser = new XclientWebParser();
+//		parser.start();
+		
+		XDownsSearch xDownsSearch = new XDownsSearch();
+		xDownsSearch.search("","奈末Office批量转PDF");
 	}
 
 }
