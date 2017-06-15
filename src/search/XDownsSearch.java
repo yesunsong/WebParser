@@ -14,7 +14,7 @@ import core.SearchResult;
 /**
  * 绿盟【http://www.xdowns.com/】
  * @author guan
- *
+ * @btw 关键字要大于2小于20个字节
  */
 public class XDownsSearch implements IWebSearch {
 	private String site = "http://www.xdowns.com";
