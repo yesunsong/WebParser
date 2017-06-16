@@ -4,35 +4,37 @@ import java.io.IOException;
 import java.util.ArrayList;
 
 import org.jsoup.Jsoup;
+import org.jsoup.helper.StringUtil;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
+//import cn.xm.yss.HttpUtils;
 import cn.xm.yss.WebUtils;
 import core.IWebSearch;
 import core.SearchResult;
 
 /**
- * 绿盟【http://www.xdowns.com/】
+ * Xclient【http://xclient.info】
  * 
  * @author guan
- * @btw 关键字要大于2小于20个字节
+ * @btw
  */
-public class XDownsSearch implements IWebSearch {
-	private String site = "http://www.xdowns.com";
-	private String searchUrl = "http://www.xdowns.com/so.asp?keyword=<%k>";
-	private String searchUrl1 = "http://tag.xdowns.com/tag.asp?keyword=<%k>";
-	private String pageUrl = "http://www.xdowns.com/tag.asp?page=<%p>&act=&classid=&keyword=<%k>";
+public class XclientSearch implements IWebSearch {
+	private String site = "http://xclient.info/?_=cc9be0cb8eeba839d501c5ef633dc1d5";
+	private String searchUrl = "http://xclient.info/search/s/<%k>/";
+	private String pageUrl = "http://xclient.info/search/s/be/<%p>";
 	private ArrayList<SearchResult> arrayList = new ArrayList<>();
 
 	@Override
 	public ArrayList<SearchResult> search(String url, String keyword) {
-		String encode = WebUtils.getInstance().encode(keyword, "GBK");
+		String encode = WebUtils.getInstance().encode(keyword, "utf-8");
+//		%E4%B8%AD%E5%9B%BD
 		// System.err.println(encode);
 		Document document = getDocument(getFirstPage(url, encode));
 		parse(document);
 		int total = getTotalPage(document);
-		// System.err.println("总页数：" + total);
+		 System.err.println("总页数：" + total);
 		for (int i = 2; i <= total; i++) {
 			document = getDocument(i, keyword);
 			parse(document);
@@ -65,13 +67,12 @@ public class XDownsSearch implements IWebSearch {
 	}
 
 	public void parse(Document document) {
-		Elements elements = document.getElementsByAttributeValue("id", "searchpageTitle");
+		Elements elements = document.getElementsByAttributeValue("class", "list-item-title");
 		for (Element element : elements) {
-			Element element2 = element.select("span").first();
-			Element element3 = element2.select("a[href]").first();
-			String link = site + element3.attr("href");
-			String title = element3.attr("title");
-			String source = "[绿盟]";
+			Element element2 = element.select("a").first();
+			String link = element2.attr("href");
+			String title = element2.attr("title");
+			String source = "[Xclient]";
 			System.err.println(source + " /" + title + " /" + link);
 
 			SearchResult result = new SearchResult();
@@ -85,12 +86,15 @@ public class XDownsSearch implements IWebSearch {
 	// 特殊处理这里的获取总页数
 	public int getTotalPage(Document document) {
 		int total = 1;
-		Elements element = document.getElementsByTag("script");
-		for (Element element2 : element) {
-			if (element.toString().contains("ShowListPage")) {
-				String[] array = element.toString().split(",");
-				total = Integer.valueOf(array[1]);
-				break;
+		Element element = document.getElementsByAttributeValue("class", "page-navigator").first();
+		if (element==null) {
+			return total;
+		}
+		Elements elements = element.select("li");
+		for (Element element2 : elements) {
+			String numText = element2.text();
+			if (StringUtil.isNumeric(numText)) {
+				total = Math.max(total, Integer.valueOf(numText));
 			}
 		}
 		return total;
