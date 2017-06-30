@@ -7,7 +7,7 @@ import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
-import cn.xm.yss.HttpUtils;
+//import cn.xm.yss.HttpUtils;
 import core.IWebSearch;
 import core.SearchResult;
 
@@ -41,9 +41,10 @@ public class XDownsSearch implements IWebSearch {
 	
 	public Document getDocument(int page,String keyword){
 		String newurl = pageUrl.replace("<%k>",keyword).replace("<%p>", String.valueOf(page));
-		String html = HttpUtils.getInstance().httpGet1(newurl);
-		Document document = Jsoup.parse(html);
-		return document;
+//		String html = HttpUtils.getInstance().httpGet1(newurl);
+//		Document document = Jsoup.parse(html);
+//		return document;
+		return null;
 	}
 	
 	public void parse(Document document){
